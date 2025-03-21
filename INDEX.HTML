@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Location Tracker</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    a { display: block; margin-top: 10px; color: blue; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h2>📍 Quick Mobile Location Tracker</h2>
+  <p id="status">Tap the button below to get your location.</p>
+  <button onclick="fetchLocation()">Get My Location</button>
+  <div id="result"></div>
+
+  <script>
+    function fetchLocation() {
+      document.getElementById('status').innerText = 'Getting location...';
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showLocation, showError, { enableHighAccuracy: true });
+      } else {
+        document.getElementById('status').innerText = "Geolocation not supported.";
+      }
+    }
+
+    function showLocation(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      const googleMapsURL = `https://maps.google.com/?q=${lat},${lng}`;
+      const lineShareURL = `https://line.me/R/msg/text/?My%20Location:%20${encodeURIComponent(googleMapsURL)}`;
+
+      document.getElementById('result').innerHTML = `
+        <p>Latitude: ${lat}<br>Longitude: ${lng}</p>
+        <a href="${googleMapsURL}" target="_blank">View on Google Maps 🌍</a>
+        <a href="${lineShareURL}" target="_blank">Share Location via LINE 💬</a>
+      `;
+      document.getElementById('status').innerText = 'Location found!';
+    }
+
+    function showError(error) {
+      document.getElementById('status').innerText = "Error: " + error.message;
+    }
+  </script>
+</body>
+</html>
